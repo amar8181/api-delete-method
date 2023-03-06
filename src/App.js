@@ -1,66 +1,40 @@
 import './App.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
-
   // 
-  const [data, setData] = useState([])
-  useEffect(() => {
-    fetch('https://fakestoreapi.com/products').then((result) => {
-      result.json().then((responce) => {
-        // console.warn("result", responce)
-        setData(responce)
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  // 
+  function saveUser() {
+    console.log(title, price, description);//------------------//
+
+    let data={title,price,description}
+    fetch("https://fakestoreapi.com/products",{
+      method:"post",
+      headers:{
+        "Accept":"application/json",
+        "Content-type":"application/json"
+      },
+      body:JSON.stringify(data)
+    }).then((result)=>{
+      // console.log('result',result);
+      result.json().then(()=>{
+          console.warn("responce",Response)
       })
     })
-  }, [])
-  console.warn(data)
-  // 
-
+  }
   return (
-    <div className="App">
-      <h1>my-api</h1>
- {/*  */}
- {/* how to create table using api */}
-          <table border={1}>
-            <tbody>
-            <tr>
-              <th>id</th>
-              <th>title</th>
-              <th>price</th>
-              <th>description</th>
-            </tr>
-
-          
-                  {
-                    data.map((item)=>
-                        <tr>
-                          <td>{item.id}</td>
-                          <td>{item.title}</td>
-                          <td>{item.price}</td>
-                          <td>{item.description}</td>
-                        </tr>
-                    )
-                  }
-              </tbody>
-          </table>
-  {/*  */}
-<hr/>
-{/*  */}
-{/* hoe toget data from upi */}
-                  {
-                    data.map((item)=>
-                    <div>
-                    <p>{item.id}</p>
-                    <p>{item.title}</p>
-                    <p>{item.price}</p>
-                    <p>{item.description}</p>
-                    </div>
-                    )
-                  }
- {/*  */}
-
+    <div className='App'>
+      <h1>post api example</h1>
+      <input type="text" value={title} onChange={(e) => { setTitle(e.target.value) }} name='name' /> <br></br><br></br>
+      <input type="text" value={price} onChange={(e) => { setPrice(e.target.value) }} name='email' /> <br></br><br></br>
+      <input type="text" value={description} onChange={(e) => {setDescription(e.target.value) }} name='mobile' /> <br></br><br></br>
+      <button type='button' onClick={saveUser}>Save new user</button>
     </div>
-  );
+  )
+
 }
 
 export default App;
