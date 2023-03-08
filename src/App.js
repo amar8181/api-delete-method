@@ -1,40 +1,85 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
-  // 
-  const [title, setTitle] = useState('');
-  const [price, setPrice] = useState('');
-  const [description, setDescription] = useState('');
-  // 
-  function saveUser() {
-    console.log(title, price, description);//------------------//
 
-    let data={title,price,description}
-    fetch("https://fakestoreapi.com/products",{
-      method:"post",
-      headers:{
-        "Accept":"application/json",
-        "Content-type":"application/json"
-      },
-      body:JSON.stringify(data)
-    }).then((result)=>{
-      // console.log('result',result);
-      result.json().then(()=>{
-          console.warn("responce",Response)
+  // 
+  const [data, setData] = useState([])
+  useEffect(() => {
+    getList();
+  }, [])
+
+  function getList() {
+    fetch("https://fakestoreapi.com/products").then((result) => {
+      result.json().then((resp) => {
+        setData(resp)
       })
     })
   }
-  return (
-    <div className='App'>
-      <h1>post api example</h1>
-      <input type="text" value={title} onChange={(e) => { setTitle(e.target.value) }} name='name' /> <br></br><br></br>
-      <input type="text" value={price} onChange={(e) => { setPrice(e.target.value) }} name='email' /> <br></br><br></br>
-      <input type="text" value={description} onChange={(e) => {setDescription(e.target.value) }} name='mobile' /> <br></br><br></br>
-      <button type='button' onClick={saveUser}>Save new user</button>
-    </div>
-  )
+  // 
 
+  function deleteUser(id) {
+    fetch(`https://fakestoreapi.com/products/${id}`, {
+      method: 'DELETE'
+     
+    }) .then(response => response.json())
+    .then(() => {
+      setData(values => {
+        return values.filter(item => item.id !== id)
+      })
+
+      })
+    }
+  
+
+  return (
+    <div className="App">
+      <h1>my-api</h1>
+      <table border={1}>
+        <tbody>
+          <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>price</th>
+            <th>description</th>
+          </tr>
+
+          {
+            data.map((item, i) =>
+              <tr key={i}>
+                <td>{item.id}</td>
+                <td>{item.title}</td>
+                <td>{item.price}</td>
+                <td>{item.description}</td>
+                <td><button onClick={() => deleteUser(item.id)}>Delete</button></td>
+              </tr>
+            )
+          }
+        </tbody>
+      </table>
+
+
+
+
+      {/*  */}
+      {/* <hr /> */}
+      {/*  */}
+
+      {/* how toget data from upi */}
+      {/* {
+                    data.map((item)=>
+                    <div>
+                    <p>{item.id}</p>
+                    <p>{item.title}</p>
+                    <p>{item.price}</p>
+                    <p>{item.description}</p>
+                    </div>
+                    )
+                  } */}
+      {/*  */}
+
+    </div>
+  );
 }
 
 export default App;
